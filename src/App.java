@@ -27,11 +27,17 @@ public class App {
 		
 		dbConnection=connection;
 		getAllStaffMembersFromDataBase();
-		getAllDepartmentsFromDataBase();
+		System.out.println(staffMembers.get(13));
+		//getAllDepartmentsFromDataBase();
+		//System.out.println(department.values());
 		//getAllStudentFromDataBase();
+		//System.out.println(students.values());
 		//addStudentInDepartment(1);
+		//System.out.println("Students in Computer Science"+department.get(1).getStudents());
 		//addStudentInDepartment(2);
+		//System.out.println("Students in Business Studies"+department.get(2).getStudents());
 		//addStudentInDepartment(3);
+		//System.out.println("Students in Business Studies"+department.get(2).getStudents());
 		//addStaffInDepartment(1);
 		//addCoursesInDepartment(1);
 		//addLabsInDepartment(1);
@@ -64,6 +70,8 @@ public class App {
 		//addDepartmentInStaff(14);
 		//addDepartmentInStaff(15);
 		//addDepartmentInStaff(16);
+		//addCoursesToStaff(10);
+		//assignCoursesToStaff(11);
 	}
 	/**
 	 *
@@ -72,15 +80,14 @@ public class App {
 	 * @throws SQLException
 	 */
 	Staff getStaffId(int id) throws SQLException{
-		int _id=id;
-		if(staffMembers.containsKey(_id)) {
-			return staffMembers.get(_id);
+		if(staffMembers.containsKey(id)) {
+			return staffMembers.get(id);
 			}
 		else {
 			Statement st = dbConnection.createStatement();
-			ResultSet rows =st.executeQuery("select * from staff where id="+_id);
+			ResultSet rows =st.executeQuery("select * from staff where id="+id);
 			while(rows.next()) {
-				_id = rows.getInt("id");
+				int _id = rows.getInt("id");
 				String name = rows.getString("name");
 				String eMail = rows.getString("eMail");
 				String phone = rows.getString("phone");
@@ -88,11 +95,11 @@ public class App {
 				Staff supervisor=null;
 				Staff staffMember=new Staff(name,phone,eMail,_id,supervisor);
 				if(staffMembers.containsKey(supervisorId)) {
-					staffMember.setSupervisor(getStaffId(supervisorId));
-					supervisor=staffMember.getSupervisor();
+					staffMember.setSupervisor(staffMembers.get(supervisorId));
 					}
 				else {
 					getStaffId(supervisorId);
+					staffMember.setSupervisor(staffMembers.get(supervisorId));
 					}
 				return staffMember;
 			}
@@ -107,9 +114,8 @@ public class App {
 		Statement st = dbConnection.createStatement();
 		ResultSet rows =st.executeQuery("select * from Staff");
 		while(rows.next()) {
-			Staff newStaff=getStaffId(rows.getInt("id"));
-			staffMembers.put(rows.getInt("id"), newStaff);
-			System.out.println(staffMembers.get((rows.getInt("id"))));
+	    Staff newStaff=getStaffId(rows.getInt("id"));
+	    staffMembers.put(rows.getInt("id"), newStaff);
 		}
 	}
 	
@@ -123,7 +129,6 @@ public class App {
 		while(rows.next()) {
 			Department newDepartment=getDepartment(rows.getInt("id"));
 			department.put(rows.getInt("id"), newDepartment);
-			System.out.println(department.get((rows.getInt("id"))));
 		}
 	}
 	/**
@@ -172,16 +177,10 @@ public class App {
 		Statement st = dbConnection.createStatement();
 		ResultSet rows =st.executeQuery("select * from student where DepartmentID="+id);
 		while(rows.next()) {
-			int _id = rows.getInt("id");
-			String name = rows.getString("name");
-			String eMail = rows.getString("eMail");
-			String phone = rows.getString("phone");
-			Department newdepartment=getDepartment(id);
-			Student newStudent=  new Student(name,phone,eMail,_id,newdepartment);
+			Student newStudent=students.get(rows.getInt("id"));
 			ArrayList<Student> students=new ArrayList<Student>();
 			students.add(newStudent);
 			department.get(id).setStudents(students);
-			System.out.println(newStudent);
 		}
 	}
 	/**
@@ -253,8 +252,24 @@ public class App {
 		ResultSet rows =st.executeQuery("select * from department where ID in (select DeptID from staffWorksfor where StaffID="+id+")");
 		while(rows.next()){
 			Department newDepartment=getDepartment(rows.getInt("ID"));
-			staffMembers.get(id).setDepartments(newDepartment);
+			staffMembers.get(id).setDepartment(newDepartment);
 			}
+	}
+	/**
+	 * Assigns Courses to Staff Members
+	 * @param id
+	 * @throws SQLException
+	 */
+	void assignCoursesToStaff(int id)throws SQLException{
+		Statement st = dbConnection.createStatement();
+		ResultSet rows =st.executeQuery("select * from course where InstructorID="+id);
+		while(rows.next()) {
+			Course newCourse=getCourse(rows.getInt("id"));
+			System.out.println(id);
+			System.out.println(newCourse);
+			staffMembers.get(id).setCourse(newCourse);
+			System.out.println(newCourse);
+		}
 	}
 	/**
 	 * Adds Students from Database
@@ -383,8 +398,9 @@ public class App {
 			}
 		return newDesignation;
 		}
-	/*
-	 * Adds Designation into map
+	/**
+	 * Adds Designations into Tree Map
+	 * @throws SQLException
 	 */
 	void getAllDesignationsFromDataBase()throws SQLException {
 		Statement st = dbConnection.createStatement();
