@@ -5,7 +5,7 @@ public class Main {
 
 	public static void main(String[] args)  {
 		try {
-			
+			Connection	connect= DriverManager.getConnection("jdbc:mariadb://localhost/university","root","4991070");
 			System.out.println("Database Connected");
 			App myApp=new App();
 			myApp.run(connect);
