@@ -1,6 +1,5 @@
- import java.util.ArrayList;
+import java.util.ArrayList;
 import java.util.TreeMap;
-
 import java.sql.*;
 
 import Divisions.Course;
@@ -20,14 +19,13 @@ public class App {
 	TreeMap<Integer,Designation>designations=new TreeMap<Integer,Designation>();
 
 	Connection dbConnection;
-	App(){
-		
+	App(){	
 	}
 	void run(Connection connection) throws SQLException{
 		
 		dbConnection=connection;
 		getAllStaffMembersFromDataBase();
-		System.out.println(staffMembers.get(13));
+		System.out.println(staffMembers.get(23).getSupervisor());
 		//getAllDepartmentsFromDataBase();
 		//System.out.println(department.values());
 		//getAllStudentFromDataBase();
@@ -80,32 +78,48 @@ public class App {
 	 * @throws SQLException
 	 */
 	Staff getStaffId(int id) throws SQLException{
+		// Check if Staff Member already exists in Tree Map or not 
 		if(staffMembers.containsKey(id)) {
+			//If Exists return that Staff Member
 			return staffMembers.get(id);
 			}
+		// Else Create A new Staff Member
 		else {
 			Statement st = dbConnection.createStatement();
+			// Use Query to find the Staff Member from Data Base 
 			ResultSet rows =st.executeQuery("select * from staff where id="+id);
+			// Uses this while loop to find values from columns in data base 
 			while(rows.next()) {
+				// Store's Id in this variable
 				int _id = rows.getInt("id");
+				// Store's name in this variable
 				String name = rows.getString("name");
+				// Store's eMail in this variable
 				String eMail = rows.getString("eMail");
+				// Store's phone no in this variable
 				String phone = rows.getString("phone");
+				// Store's supervisor Id in this variable
 				int supervisorId=rows.getInt("supervisor");
+				// creates a new object of class Staff and initializes null value in it
 				Staff supervisor=null;
+				// creates new object of class Staff and initializes values from data base in it 
 				Staff staffMember=new Staff(name,phone,eMail,_id,supervisor);
+				// checks if the supervisor of this staff member already exists in Tree Map or not
 				if(staffMembers.containsKey(supervisorId)) {
+					// If supervisor exists in tree map then set supervisor of this of this staff member from Tree Map
 					staffMember.setSupervisor(staffMembers.get(supervisorId));
 					}
 				else {
+					// If supervisor does not exists in this tree map than create it
 					getStaffId(supervisorId);
-					staffMember.setSupervisor(staffMembers.get(supervisorId));
 					}
+				// returns the staff member created 
 				return staffMember;
+				}
 			}
+		// returns null
+		return null;
 		}
-		return null;		
-	}
 	/**
 	 * Adds Staff Member into Map
 	 * @throws SQLException
@@ -114,10 +128,10 @@ public class App {
 		Statement st = dbConnection.createStatement();
 		ResultSet rows =st.executeQuery("select * from Staff");
 		while(rows.next()) {
-	    Staff newStaff=getStaffId(rows.getInt("id"));
-	    staffMembers.put(rows.getInt("id"), newStaff);
+			Staff newStaff=getStaffId(rows.getInt("id"));
+			staffMembers.put(rows.getInt("id"), newStaff);
+			}
 		}
-	}
 	
 	/**
 	 * Adds Departments in map
@@ -129,8 +143,8 @@ public class App {
 		while(rows.next()) {
 			Department newDepartment=getDepartment(rows.getInt("id"));
 			department.put(rows.getInt("id"), newDepartment);
+			}
 		}
-	}
 	/**
 	 * returns Department from Data Base
 	 * @param id
@@ -146,9 +160,9 @@ public class App {
 			String name=rows.getString("name");
 			Staff head=getStaffId(rows.getInt("HOD"));
 			department=new Department(id,name,head);
-		}
+			}
 		return department;
-	}
+		}
 	/**
 	 * returns Student
 	 * @param id
@@ -166,9 +180,9 @@ public class App {
 			String phone = rows.getString("phone");
 			Department department=getDepartment(rows.getInt("departmentId"));
 			newStudent=  new Student(name,phone,eMail,id,department);
-		}
+			}
 		return newStudent;
-	}
+		}
 	/**
 	 * Adds student in department
 	 * @throws SQLException
@@ -181,8 +195,8 @@ public class App {
 			ArrayList<Student> students=new ArrayList<Student>();
 			students.add(newStudent);
 			department.get(id).setStudents(students);
+			}
 		}
-	}
 	/**
 	 * Add Staff Members in Department
 	 * @param id
@@ -197,8 +211,8 @@ public class App {
 			staffMembers.add(newStaff);
 			department.get(id).setStaffMembers(staffMembers);
 			System.out.println(newStaff);
+			}
 		}
-	}
 	/**
 	 * Adds Courses in Departments
 	 * @param id
@@ -213,8 +227,8 @@ public class App {
 			courses.add(newCourse);
 			department.get(id).setCourses(courses);
 			System.out.println(newCourse);
+			}
 		}
-	}
 	/**
 	 * Adds Labs in Departments
 	 * @param id
@@ -229,8 +243,8 @@ public class App {
 			labs.add(newLab);
 			department.get(id).setLabs(labs);
 			System.out.println(newLab);
+			}
 		}
-	}
 	/**
 	 * Adds Location in Departments
 	 * @param id
@@ -245,8 +259,8 @@ public class App {
 			labs.add(newLocation);
 			department.get(id).setLocations(labs);
 			System.out.println(newLocation);
+			}
 		}
-	}
 	void addDepartmentInStaff(int id)throws SQLException{
 		Statement st = dbConnection.createStatement();
 		ResultSet rows =st.executeQuery("select * from department where ID in (select DeptID from staffWorksfor where StaffID="+id+")");
@@ -254,7 +268,7 @@ public class App {
 			Department newDepartment=getDepartment(rows.getInt("ID"));
 			staffMembers.get(id).setDepartment(newDepartment);
 			}
-	}
+		}
 	/**
 	 * Assigns Courses to Staff Members
 	 * @param id
@@ -269,8 +283,8 @@ public class App {
 			System.out.println(newCourse);
 			staffMembers.get(id).setCourse(newCourse);
 			System.out.println(newCourse);
+			}
 		}
-	}
 	/**
 	 * Adds Students from Database
 	 * @throws SQLException
@@ -282,8 +296,8 @@ public class App {
 			Student newStudent=getStudent(rows.getInt("id"));
 			students.put(rows.getInt("id"), newStudent);
 			System.out.println(students.get(rows.getInt("id")));
+			}
 		}
-	}
 	/**
 	 * returns Course
 	 * @param id
@@ -301,9 +315,9 @@ public class App {
 			Department department=getDepartment(rows.getInt("departmentId"));
 			int creditHours=rows.getInt("creditHours");
 			newCourse=new Course(id,name,creditHours,instructor,department);
-		}
+			}
 		return newCourse;
-	}
+		}
 	
 	/**
 	 * Adds Courses into Map
@@ -316,8 +330,8 @@ public class App {
 			Course newCourse=getCourse(rows.getInt("id"));
 			courses.put(rows.getInt("id"),newCourse);
 			System.out.println(newCourse);
+			}
 		}
-	}
 	/**
 	 * return Location
 	 * @param id
