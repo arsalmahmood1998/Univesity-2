@@ -25,7 +25,7 @@ public class App {
 		
 		dbConnection=connection;
 		getAllStaffMembersFromDataBase();
-		System.out.println(staffMembers.values());
+		System.out.println(staffMembers.get(13).getSupervisor());
 		//getAllDepartmentsFromDataBase();
 		//System.out.println(department.values());
 		//getAllStudentFromDataBase();
@@ -111,7 +111,9 @@ public class App {
 					}
 				else {
 					// If supervisor does not exists in this tree map than create it
-					getStaffId(supervisorId);
+					supervisor=getStaffId(supervisorId);
+					//Set supervisor of staff member 
+					staffMember.setSupervisor(supervisor);
 					}
 				// returns the staff member created 
 				return staffMember;
