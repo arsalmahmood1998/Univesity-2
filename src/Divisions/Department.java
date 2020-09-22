@@ -100,9 +100,5 @@ public class Department{
 				+ (staffMembers != null ? "staffMembers=" + staffMembers + ", " : "")
 				+ (courses != null ? "courses=" + courses + ", " : "") + (labs != null ? "labs=" + labs + ", " : "")
 				+ (locations != null ? "locations=" + locations : "") + "]";
-	}
-
-	
-	
-	
+	}	
 }
