@@ -24,14 +24,15 @@ public class App {
 	void run(Connection connection) throws SQLException{
 		
 		dbConnection=connection;
-		getAllStaffMembersFromDataBase();
-		System.out.println(staffMembers.get(13).getSupervisor());
-		//getAllDepartmentsFromDataBase();
-		//System.out.println(department.values());
+		//getAllStaffMembersFromDataBase();
+		//System.out.println(staffMembers.values());
+		getAllDepartmentsFromDataBase();
+		System.out.println(department.values());
 		//getAllStudentFromDataBase();
 		//System.out.println(students.values());
+		System.out.println("Students in Computer Science"+department.get(1).getStudents());
 		//addStudentInDepartment(1);
-		//System.out.println("Students in Computer Science"+department.get(1).getStudents());
+		//System.out.println("Students in Computer Science"+department.get(1).getStudents().get(0));
 		//addStudentInDepartment(2);
 		//System.out.println("Students in Business Studies"+department.get(2).getStudents());
 		//addStudentInDepartment(3);
@@ -82,7 +83,7 @@ public class App {
 		if(staffMembers.containsKey(id)) {
 			//If Exists return that Staff Member
 			return staffMembers.get(id);
-			}
+		}
 		// Else Create A new Staff Member
 		else {
 			Statement st = dbConnection.createStatement();
@@ -108,20 +109,20 @@ public class App {
 				if(staffMembers.containsKey(supervisorId)) {
 					// If supervisor exists in tree map then set supervisor of this of this staff member from Tree Map
 					staffMember.setSupervisor(staffMembers.get(supervisorId));
-					}
+				}
 				else {
 					// If supervisor does not exists in this tree map than create it
 					supervisor=getStaffId(supervisorId);
 					//Set supervisor of staff member 
 					staffMember.setSupervisor(supervisor);
-					}
+				}
 				// returns the staff member created 
 				return staffMember;
-				}
 			}
+		}
 		// returns null
 		return null;
-		}
+	}
 	/**
 	 * Adds Staff Member into Map
 	 * @throws SQLException
@@ -132,9 +133,8 @@ public class App {
 		while(rows.next()) {
 			Staff newStaff=getStaffId(rows.getInt("id"));
 			staffMembers.put(rows.getInt("id"), newStaff);
-			}
 		}
-	
+	}
 	/**
 	 * Adds Departments in map
 	 * @throws SQLException
@@ -145,8 +145,8 @@ public class App {
 		while(rows.next()) {
 			Department newDepartment=getDepartment(rows.getInt("id"));
 			department.put(rows.getInt("id"), newDepartment);
-			}
 		}
+	}
 	/**
 	 * returns Department from Data Base
 	 * @param id
@@ -162,9 +162,11 @@ public class App {
 			String name=rows.getString("name");
 			Staff head=getStaffId(rows.getInt("HOD"));
 			department=new Department(id,name,head);
-			}
-		return department;
+			Student student=addStudentInDepartment(id);
+			department.addStudent(student);
 		}
+		return department;
+	}
 	/**
 	 * returns Student
 	 * @param id
@@ -180,25 +182,25 @@ public class App {
 			String name = rows.getString("name");
 			String eMail = rows.getString("eMail");
 			String phone = rows.getString("phone");
-			Department department=getDepartment(rows.getInt("departmentId"));
-			newStudent=  new Student(name,phone,eMail,id,department);
-			}
-		return newStudent;
+			Department newdepartment=department.get(rows.getInt("departmentId"));
+			newStudent=  new Student(name,phone,eMail,id,newdepartment);
 		}
+		return newStudent;
+	}
 	/**
 	 * Adds student in department
 	 * @throws SQLException
 	 */
-	void addStudentInDepartment(int id) throws SQLException {
+	Student addStudentInDepartment(int id) throws SQLException {
 		Statement st = dbConnection.createStatement();
 		ResultSet rows =st.executeQuery("select * from student where DepartmentID="+id);
 		while(rows.next()) {
-			Student newStudent=students.get(rows.getInt("id"));
-			ArrayList<Student> students=new ArrayList<Student>();
-			students.add(newStudent);
-			department.get(id).setStudents(students);
-			}
+			//System.out.println(rows.getInt("id"));
+			Student newStudent=getStudent(rows.getInt("id"));
+			return newStudent;
 		}
+		return null;
+	}
 	/**
 	 * Add Staff Members in Department
 	 * @param id
@@ -213,8 +215,8 @@ public class App {
 			staffMembers.add(newStaff);
 			department.get(id).setStaffMembers(staffMembers);
 			System.out.println(newStaff);
-			}
 		}
+	}
 	/**
 	 * Adds Courses in Departments
 	 * @param id
@@ -245,8 +247,8 @@ public class App {
 			labs.add(newLab);
 			department.get(id).setLabs(labs);
 			System.out.println(newLab);
-			}
 		}
+	}
 	/**
 	 * Adds Location in Departments
 	 * @param id
@@ -261,16 +263,16 @@ public class App {
 			labs.add(newLocation);
 			department.get(id).setLocations(labs);
 			System.out.println(newLocation);
-			}
 		}
+	}
 	void addDepartmentInStaff(int id)throws SQLException{
 		Statement st = dbConnection.createStatement();
 		ResultSet rows =st.executeQuery("select * from department where ID in (select DeptID from staffWorksfor where StaffID="+id+")");
 		while(rows.next()){
 			Department newDepartment=getDepartment(rows.getInt("ID"));
 			staffMembers.get(id).setDepartment(newDepartment);
-			}
 		}
+	}
 	/**
 	 * Assigns Courses to Staff Members
 	 * @param id
@@ -285,8 +287,8 @@ public class App {
 			System.out.println(newCourse);
 			staffMembers.get(id).setCourse(newCourse);
 			System.out.println(newCourse);
-			}
 		}
+	}
 	/**
 	 * Adds Students from Database
 	 * @throws SQLException
@@ -297,9 +299,8 @@ public class App {
 		while(rows.next()) {
 			Student newStudent=getStudent(rows.getInt("id"));
 			students.put(rows.getInt("id"), newStudent);
-			System.out.println(students.get(rows.getInt("id")));
-			}
 		}
+	}
 	/**
 	 * returns Course
 	 * @param id
@@ -317,9 +318,9 @@ public class App {
 			Department department=getDepartment(rows.getInt("departmentId"));
 			int creditHours=rows.getInt("creditHours");
 			newCourse=new Course(id,name,creditHours,instructor,department);
-			}
-		return newCourse;
 		}
+		return newCourse;
+	}
 	
 	/**
 	 * Adds Courses into Map
@@ -332,8 +333,8 @@ public class App {
 			Course newCourse=getCourse(rows.getInt("id"));
 			courses.put(rows.getInt("id"),newCourse);
 			System.out.println(newCourse);
-			}
 		}
+	}
 	/**
 	 * return Location
 	 * @param id
@@ -351,9 +352,9 @@ public class App {
 			Department department=getDepartment(rows.getInt("DeptId"));
 			int rooms=rows.getInt("NoOfRooms");
 			location=new Location(id,name,area,rooms,department);
-			}
-		return location;
 		}
+		return location;
+	}
 	/**
 	 * Adds Location From Data Base
 	 * @throws SQLException
@@ -365,8 +366,8 @@ public class App {
 			Location newLocation=getLocation(rows.getInt("id"));
 			locations.put(rows.getInt("id"), newLocation);
 			System.out.println(locations.get(rows.getInt("id")));
-			}
 		}
+	}
 	/**
 	 * returns Lab from Data Base
 	 * @param id
@@ -425,6 +426,7 @@ public class App {
 			Designation newDesignation=getDesignation(rows.getInt("DesignationID"));
 			designations.put(rows.getInt("DesignationID"), newDesignation);
 			System.out.println(designations.get(rows.getInt("DesignationID")));
-			}
+		
 		}
 	}
+}
