@@ -44,15 +44,14 @@ public class Department{
 	public void setId(int id) {
 		this.id = id;
 	}
-	public void addStudent(Student newStudent) {
-		this.students.add(newStudent);
+	public void addStudent(Student newStudents) {
+		this.students.add(newStudents);
 	}
 	public boolean removeStudent(Student oldStudent) {
 		
 		return this.students.remove(oldStudent); 
 	}
 	
-
 	public ArrayList<Staff> getStaffMembers() {
 		return staffMembers;
 	}
@@ -61,8 +60,8 @@ public class Department{
 		this.staffMembers = staffMembers;
 	}
 
-	public void setStudents(ArrayList<Student> students) {
-		this.students = students;
+	public void setStudents(Student students) {
+		this.students.add(students);
 	}
 
 	public ArrayList<Course> getCourses() {
@@ -100,5 +99,7 @@ public class Department{
 				+ (staffMembers != null ? "staffMembers=" + staffMembers + ", " : "")
 				+ (courses != null ? "courses=" + courses + ", " : "") + (labs != null ? "labs=" + labs + ", " : "")
 				+ (locations != null ? "locations=" + locations : "") + "]";
-	}	
-}
+	}
+
+	
+	}
