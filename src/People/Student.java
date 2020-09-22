@@ -24,13 +24,10 @@ public class Student extends Person {
 
 	@Override
 	public String toString() {
-		return "Student [id=" + id + ", " + (department != null ? "department=" + department + ", " : "") + "getId()="
-				+ getId() + ", " + (getDepartment() != null ? "getDepartment()=" + getDepartment() + ", " : "")
+		return "Student [id=" + id + ", " + (department != null ? "department=" + department + ", " : "")
 				+ (getName() != null ? "getName()=" + getName() + ", " : "")
 				+ (getPhone() != null ? "getPhone()=" + getPhone() + ", " : "")
-				+ (getEmail() != null ? "getEmail()=" + getEmail() + ", " : "")
-				+ (getClass() != null ? "getClass()=" + getClass() + ", " : "") + "hashCode()=" + hashCode() + ", "
-				+ (super.toString() != null ? "toString()=" + super.toString() : "") + "]";
+				+ (getEmail() != null ? "getEmail()=" + getEmail() : "") + "]";
 	}
 	
 }
