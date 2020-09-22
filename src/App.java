@@ -25,7 +25,7 @@ public class App {
 		
 		dbConnection=connection;
 		getAllStaffMembersFromDataBase();
-		System.out.println(staffMembers.get(23).getSupervisor());
+		System.out.println(staffMembers.values());
 		//getAllDepartmentsFromDataBase();
 		//System.out.println(department.values());
 		//getAllStudentFromDataBase();
@@ -87,19 +87,19 @@ public class App {
 		else {
 			Statement st = dbConnection.createStatement();
 			// Use Query to find the Staff Member from Data Base 
-			ResultSet rows =st.executeQuery("select * from staff where id="+id);
+			ResultSet columns =st.executeQuery("select * from staff where id="+id);
 			// Uses this while loop to find values from columns in data base 
-			while(rows.next()) {
+			while(columns.next()) {
 				// Store's Id in this variable
-				int _id = rows.getInt("id");
+				int _id = columns.getInt("id");
 				// Store's name in this variable
-				String name = rows.getString("name");
+				String name = columns.getString("name");
 				// Store's eMail in this variable
-				String eMail = rows.getString("eMail");
+				String eMail = columns.getString("eMail");
 				// Store's phone no in this variable
-				String phone = rows.getString("phone");
+				String phone =columns.getString("phone");
 				// Store's supervisor Id in this variable
-				int supervisorId=rows.getInt("supervisor");
+				int supervisorId=columns.getInt("supervisor");
 				// creates a new object of class Staff and initializes null value in it
 				Staff supervisor=null;
 				// creates new object of class Staff and initializes values from data base in it 
