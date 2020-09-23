@@ -220,9 +220,9 @@ public class App {
 		while(rows.next()) {
 			Course course=getCourse(rows.getInt("id"));
 			allCourses.add(course);
-			}
-		return allCourses;
 		}
+		return allCourses;
+	}
 	/**
 	 * Adds Labs in Departments
 	 * @param id
@@ -373,9 +373,9 @@ public class App {
 			Location location=getLocation(rows.getInt("Location"));
 			Department newDepartment=department.get((rows.getInt("DepartmentId")));
 			lab=new Lab(id,name,newDepartment,location);
-			}
-		return lab;
 		}
+		return lab;
+	}
 	/**
 	 * Adds Lab into Map
 	 * @throws SQLException
@@ -387,8 +387,8 @@ public class App {
 			Lab newLab=getLab(rows.getInt("id"));
 			labs.put(rows.getInt("id"), newLab);
 			System.out.println(labs.get(rows.getInt("id")));
-			}
 		}
+	}
 	/**
 	 * returns Designation from Data Base
 	 */
@@ -401,9 +401,9 @@ public class App {
 			String title=rows.getString("DesignationTitle");
 			String salary=rows.getString("SalaryInRupess");
 			newDesignation=new Designation(id,title,salary);
-			}
-		return newDesignation;
 		}
+		return newDesignation;
+	}
 	/**
 	 * Adds Designations into Tree Map
 	 * @throws SQLException
