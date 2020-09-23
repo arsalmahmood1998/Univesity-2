@@ -57,6 +57,12 @@ public class Course {
 	public void setInstructor(Staff instructor) {
 		this.instructor = instructor;
 	}
+	public Department getDepartment() {
+		return department;
+	}
+	public void setDepartment(Department department) {
+		this.department = department;
+	}
 	@Override
 	public String toString() {
 		return "Course [id=" + id + ", " + (name != null ? "name=" + name + ", " : "") + "creditHours=" + creditHours
@@ -65,12 +71,5 @@ public class Course {
 				+ (instructor != null ? "instructor=" + instructor + ", " : "")
 				+ (department != null ? "department=" + department : "") + "]";
 	}
-	public Department getDepartment() {
-		return department;
-	}
-	public void setDepartment(Department department) {
-		this.department = department;
-	}
-
 	
 }
