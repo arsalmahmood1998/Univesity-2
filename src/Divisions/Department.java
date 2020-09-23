@@ -56,8 +56,8 @@ public class Department{
 		return staffMembers;
 	}
 
-	public void setStaffMembers(ArrayList<Staff> staffMembers) {
-		this.staffMembers = staffMembers;
+	public void setStaffMembers(Staff staffMembers) {
+		this.staffMembers.add(staffMembers);
 	}
 
 	public void setStudents(Student students) {
@@ -68,8 +68,8 @@ public class Department{
 		return courses;
 	}
 
-	public void setCourses(ArrayList<Course> courses) {
-		this.courses = courses;
+	public void setCourses(Course course) {
+		this.courses.add(course);
 	}
 
 	public int getId() {
@@ -80,16 +80,16 @@ public class Department{
 		return labs;
 	}
 
-	public void setLabs(ArrayList<Lab> labs) {
-		this.labs = labs;
+	public void setLabs(Lab lab) {
+		this.labs.add(lab);
 	}
 
 	public ArrayList<Location> getLocations() {
 		return locations;
 	}
 
-	public void setLocations(ArrayList<Location> locations) {
-		this.locations = locations;
+	public void setLocations(Location locations) {
+		this.locations.add(locations);
 	}
 
 	@Override
@@ -99,7 +99,5 @@ public class Department{
 				+ (staffMembers != null ? "staffMembers=" + staffMembers + ", " : "")
 				+ (courses != null ? "courses=" + courses + ", " : "") + (labs != null ? "labs=" + labs + ", " : "")
 				+ (locations != null ? "locations=" + locations : "") + "]";
-	}
-
-	
+		}
 	}
