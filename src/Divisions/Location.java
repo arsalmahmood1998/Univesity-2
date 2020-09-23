@@ -42,14 +42,11 @@ public class Location {
 	public void setDepartment(Department department) {
 		this.department = department;
 	}
-
 	@Override
 	public String toString() {
 		return "Location [id=" + id + ", " + (name != null ? "name=" + name + ", " : "")
 				+ (area != null ? "area=" + area + ", " : "") + "noOfRooms=" + noOfRooms + ", "
-				+ (department != null ? "department=" + department + ", " : "")
-				+ (getClass() != null ? "getClass()=" + getClass() + ", " : "") + "hashCode()=" + hashCode() + ", "
-				+ (super.toString() != null ? "toString()=" + super.toString() : "") + "]";
+				+ (department != null ? "department=" + department : "") + "]";
 	}
 	
 }
