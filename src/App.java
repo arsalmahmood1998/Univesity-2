@@ -24,53 +24,26 @@ public class App {
 	void run(Connection connection) throws SQLException{
 		
 		dbConnection=connection;
-		//getAllStaffMembersFromDataBase();
-		//System.out.println(staffMembers.values());
 		getAllDepartmentsFromDataBase();
-		System.out.println(department.values());
+		//System.out.println(department.values());
 		//getAllStudentFromDataBase();
-		//System.out.println(students.values());
-		System.out.println("Students in Computer Science"+department.get(1).getStudents());
-		//addStudentInDepartment(1);
-		//System.out.println("Students in Computer Science"+department.get(1).getStudents().get(0));
-		//addStudentInDepartment(2);
+		//System.out.println("Students in Computer Science"+department.get(1).getStudents());
 		//System.out.println("Students in Business Studies"+department.get(2).getStudents());
-		//addStudentInDepartment(3);
-		//System.out.println("Students in Business Studies"+department.get(2).getStudents());
-		//addStaffInDepartment(1);
-		//addCoursesInDepartment(1);
-		//addLabsInDepartment(1);
-		//addLocationInDepartment(1);
-		//addStaffInDepartment(2);
-		//addLabsInDepartment(2);
-		//addLocationInDepartment(2);
-		//addCoursesInDepartment(2);
-		//addCoursesInDepartment(3);
-		//addLabsInDepartment(3);
-		//addStaffInDepartment(3);
-		//addLocationInDepartment(3);
-		//getAllCoursesFromDataBase();
-		//getAllLocationsFromDatBase();
-		//getAllLabsFromDatBase();
-		//getAllDesignationsFromDataBase();
-		//addDepartmentInStaff(1);
-		//addDepartmentInStaff(2);
-		//addDepartmentInStaff(3);
-		//addDepartmentInStaff(4);
-		//addDepartmentInStaff(5);
-		//addDepartmentInStaff(6);
-		//addDepartmentInStaff(7);
-		//addDepartmentInStaff(8);
-		//addDepartmentInStaff(9);
-		//addDepartmentInStaff(10);
-		//addDepartmentInStaff(11);
-		//addDepartmentInStaff(12);
-		//addDepartmentInStaff(13);
-		//addDepartmentInStaff(14);
-		//addDepartmentInStaff(15);
-		//addDepartmentInStaff(16);
-		//addCoursesToStaff(10);
-		//assignCoursesToStaff(11);
+		//System.out.println("Students in Media  Studies"+department.get(3).getStudents());
+		//System.out.println("Staff in Computer Science"+department.get(1).getStaffMembers());
+		//System.out.println("Students in Business Studies"+department.get(2).getStaffMembers());
+		//System.out.println("Students in Media  Studies"+department.get(3).getStaffMembers());
+		//System.out.println("Courses in Computer Science"+department.get(1).getCourses());
+		//System.out.println("Courses in Business Studies"+department.get(2).getCourses());
+		//System.out.println("Courses in Media Studies"+department.get(3).getCourses());
+		//System.out.println("Labs in Computer Science"+department.get(1).getLabs());
+		//System.out.println("Labs in Business Studies"+department.get(2).getLabs());
+		//System.out.println("Labs in Media Studies"+department.get(3).getLabs());
+		//System.out.println("Locations Of Computer Science"+department.get(1).getLocations());
+		//System.out.println("Location Of Business Studies"+department.get(2).getLocations());
+		//System.out.println("Location Of Media Studies"+department.get(3).getLocations());
+		getAllStaffMembers();
+		System.out.println(staffMembers.values());
 	}
 	/**
 	 *
@@ -127,7 +100,7 @@ public class App {
 	 * Adds Staff Member into Map
 	 * @throws SQLException
 	 */
-	void getAllStaffMembersFromDataBase() throws SQLException {
+	void getAllStaffMembers() throws SQLException {
 		Statement st = dbConnection.createStatement();
 		ResultSet rows =st.executeQuery("select * from Staff");
 		while(rows.next()) {
@@ -162,8 +135,27 @@ public class App {
 			String name=rows.getString("name");
 			Staff head=getStaffId(rows.getInt("HOD"));
 			department=new Department(id,name,head);
-			Student student=addStudentInDepartment(id);
-			department.addStudent(student);
+			ArrayList<Student> studentsInDepartment=addStudentsInDepartment(id);
+			for(Student newStudent:studentsInDepartment) { 
+				department.addStudent(newStudent);
+			}
+			ArrayList<Staff>allStaffMembers= addStaffMembersInDepartment(id);
+			for(Staff staffMember:allStaffMembers) {
+				department.setStaffMembers(staffMember);
+			}
+			ArrayList<Course>allCourses= addCoursesInDepartment(id);
+			for(Course newCourse:allCourses) {
+				department.setCourses(newCourse);
+			}
+			ArrayList<Lab>allLabs= addLabsInDepartment(id);
+			for(Lab newLab:allLabs) {
+				department.setLabs(newLab);
+			}
+			ArrayList<Location>allLocations= addLocationInDepartment(id);
+			for(Location newLocation:allLocations) {
+				department.setLocations(newLocation);
+			}
+			
 		}
 		return department;
 	}
@@ -191,85 +183,82 @@ public class App {
 	 * Adds student in department
 	 * @throws SQLException
 	 */
-	Student addStudentInDepartment(int id) throws SQLException {
+	ArrayList <Student> addStudentsInDepartment(int id) throws SQLException {
 		Statement st = dbConnection.createStatement();
+		ArrayList<Student>allStudents=new ArrayList<Student>();
 		ResultSet rows =st.executeQuery("select * from student where DepartmentID="+id);
 		while(rows.next()) {
-			//System.out.println(rows.getInt("id"));
 			Student newStudent=getStudent(rows.getInt("id"));
-			return newStudent;
+			allStudents.add(newStudent);
 		}
-		return null;
+		return allStudents;	
 	}
 	/**
 	 * Add Staff Members in Department
 	 * @param id
 	 * @throws SQLException
 	 */
-	void addStaffInDepartment(int id) throws SQLException {
+	ArrayList<Staff> addStaffMembersInDepartment(int id) throws SQLException {
 		Statement st = dbConnection.createStatement();
 		ResultSet rows =st.executeQuery("select * from staff where id in (select StaffID from staffworksfor where DeptID ="+id+")");
+		ArrayList<Staff>allStaffMembers=new ArrayList<Staff>();
 		while(rows.next()) {
 			Staff newStaff=getStaffId(rows.getInt("id"));
-			ArrayList<Staff> staffMembers=new ArrayList<Staff>();
-			staffMembers.add(newStaff);
-			department.get(id).setStaffMembers(staffMembers);
-			System.out.println(newStaff);
+			allStaffMembers.add(newStaff);
 		}
+		return allStaffMembers;
 	}
 	/**
 	 * Adds Courses in Departments
 	 * @param id
 	 * @throws SQLException
 	 */
-	void addCoursesInDepartment(int id) throws SQLException {
+	ArrayList<Course> addCoursesInDepartment(int id) throws SQLException {
 		Statement st = dbConnection.createStatement();
+		ArrayList<Course>allCourses=new ArrayList<Course>();
 		ResultSet rows =st.executeQuery("select * from course where DepartmentId="+id);
 		while(rows.next()) {
-			Course newCourse=getCourse(rows.getInt("id"));
-			ArrayList<Course> courses=new ArrayList<Course>();
-			courses.add(newCourse);
-			department.get(id).setCourses(courses);
-			System.out.println(newCourse);
+			Course course=getCourse(rows.getInt("id"));
+			allCourses.add(course);
 			}
+		return allCourses;
 		}
 	/**
 	 * Adds Labs in Departments
 	 * @param id
 	 * @throws SQLException
 	 */
-	void addLabsInDepartment(int id) throws SQLException {
+	ArrayList<Lab> addLabsInDepartment(int id) throws SQLException {
 		Statement st = dbConnection.createStatement();
+		ArrayList<Lab>allLabs=new ArrayList<Lab>();
 		ResultSet rows =st.executeQuery("select * from lab where DepartmentId="+id);
 		while(rows.next()) {
 			Lab newLab=getLab(rows.getInt("id"));
-			ArrayList<Lab> labs=new ArrayList<Lab>();
-			labs.add(newLab);
-			department.get(id).setLabs(labs);
-			System.out.println(newLab);
+			allLabs.add(newLab);
 		}
+		return allLabs;
 	}
 	/**
 	 * Adds Location in Departments
 	 * @param id
 	 * @throws SQLException
 	 */
-	void addLocationInDepartment(int id) throws SQLException {
+	ArrayList<Location> addLocationInDepartment(int id) throws SQLException {
 		Statement st = dbConnection.createStatement();
+		ArrayList<Location> locations=new ArrayList<Location>();
 		ResultSet rows =st.executeQuery("select * from location where DeptId="+id);
 		while(rows.next()) {
 			Location newLocation=getLocation(rows.getInt("id"));
-			ArrayList<Location> labs=new ArrayList<Location>();
-			labs.add(newLocation);
-			department.get(id).setLocations(labs);
-			System.out.println(newLocation);
+			locations.add(newLocation);
+			
 		}
+		return locations;
 	}
 	void addDepartmentInStaff(int id)throws SQLException{
 		Statement st = dbConnection.createStatement();
 		ResultSet rows =st.executeQuery("select * from department where ID in (select DeptID from staffWorksfor where StaffID="+id+")");
 		while(rows.next()){
-			Department newDepartment=getDepartment(rows.getInt("ID"));
+			Department newDepartment=department.get((rows.getInt("ID")));
 			staffMembers.get(id).setDepartment(newDepartment);
 		}
 	}
@@ -315,9 +304,9 @@ public class App {
 			id=rows.getInt("id");
 			String name=rows.getString("name");
 			Staff instructor=getStaffId(rows.getInt("instructorId"));
-			Department department=getDepartment(rows.getInt("departmentId"));
+			Department newDepartment=department.get((rows.getInt("departmentId")));
 			int creditHours=rows.getInt("creditHours");
-			newCourse=new Course(id,name,creditHours,instructor,department);
+			newCourse=new Course(id,name,creditHours,instructor,newDepartment);
 		}
 		return newCourse;
 	}
@@ -349,9 +338,9 @@ public class App {
 			id=rows.getInt("ID");
 			String name=rows.getString("Name");
 			String area=rows.getString("DesignatedArea");
-			Department department=getDepartment(rows.getInt("DeptId"));
+			Department newDepartment=department.get((rows.getInt("DeptId")));
 			int rooms=rows.getInt("NoOfRooms");
-			location=new Location(id,name,area,rooms,department);
+			location=new Location(id,name,area,rooms,newDepartment);
 		}
 		return location;
 	}
@@ -382,8 +371,8 @@ public class App {
 			id=rows.getInt("ID");
 			String name=rows.getString("Name");
 			Location location=getLocation(rows.getInt("Location"));
-			Department department=getDepartment(rows.getInt("DepartmentId"));
-			lab=new Lab(id,name,department,location);
+			Department newDepartment=department.get((rows.getInt("DepartmentId")));
+			lab=new Lab(id,name,newDepartment,location);
 			}
 		return lab;
 		}
