@@ -37,6 +37,4 @@ public abstract class Person {
 				+ (email != null ? "email=" + email : "") + "]";
 	}
 	
-	
-
 }
