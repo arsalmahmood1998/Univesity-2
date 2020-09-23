@@ -64,9 +64,6 @@ public class Staff extends Person {
 				+ (course != null ? "course=" + course + ", " : "")
 				+ (getName() != null ? "getName()=" + getName() + ", " : "")
 				+ (getPhone() != null ? "getPhone()=" + getPhone() + ", " : "")
-				+ (getEmail() != null ? "getEmail()=" + getEmail() + ", " : "")
-				+ (super.toString() != null ? "toString()=" + super.toString() + ", " : "")
-				+ (getClass() != null ? "getClass()=" + getClass() + ", " : "") + "hashCode()=" + hashCode() + "]";
+				+ (getEmail() != null ? "getEmail()=" + getEmail() : "") + "]";
 	}
-	
 }
