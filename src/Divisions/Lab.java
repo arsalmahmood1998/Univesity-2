@@ -12,14 +12,6 @@ public class Lab {
 		this.department = department;
 		this.location = location;
 	}
-	
-	@Override
-	public String toString() {
-		return "Lab [id=" + id + ", " + (Name != null ? "Name=" + Name + ", " : "")
-				+ (department != null ? "department=" + department + ", " : "")
-				+ (location != null ? "location=" + location : "") + "]";
-	}
-
 	public int getId() {
 		return id;
 	}
@@ -50,6 +42,12 @@ public class Lab {
 
 	public void setLocation(Location location) {
 		this.location = location;
+	}
+	@Override
+	public String toString() {
+		return "Lab [id=" + id + ", " + (Name != null ? "Name=" + Name + ", " : "")
+				+ (department != null ? "department=" + department + ", " : "")
+				+ (location != null ? "location=" + location : "") + "]";
 	}
 	
 }
